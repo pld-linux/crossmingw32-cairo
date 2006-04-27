@@ -1,11 +1,11 @@
---- cairo-1.0.2/configure.in.orig	2005-10-04 02:43:01.000000000 +0200
-+++ cairo-1.0.2/configure.in	2006-03-04 21:24:15.043739500 +0100
-@@ -94,7 +94,7 @@
-     use_xlib=yes], [
+--- cairo-1.1.2/configure.in.orig	2006-04-25 17:48:36.000000000 +0200
++++ cairo-1.1.2/configure.in	2006-04-27 10:50:09.345832000 +0200
+@@ -134,7 +134,7 @@
+     XRENDER_REQUIRES=xrender], [
        AC_CHECK_HEADER(X11/extensions/Xrender.h, [
        AC_PATH_XTRA
--      XRENDER_LIBS="$X_LIBS -lXrender -lXext -lX11 $X_EXTRA_LIBS"
-+      XRENDER_LIBS="$X_LIBS -lXrender -lX11 $X_EXTRA_LIBS"
-       use_xlib=yes], [
+-      XRENDER_LIBS="$X_LIBS -lXrender -lXext -lX11 $X_EXTRA_LIBS"], [
++      XRENDER_LIBS="$X_LIBS -lXrender -lX11 $X_EXTRA_LIBS"], [
  		use_xlib="no (requires Xrender http://freedesktop.org/Software/xlibs)"])])
    _CHECK_FUNCS_WITH_FLAGS(XrmFinalize, $XRENDER_CFLAGS, $XRENDER_LIBS)
+ ])
