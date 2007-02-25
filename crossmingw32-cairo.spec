@@ -12,7 +12,8 @@ License:	LGPL v2.1 or MPL v1.1
 Group:		Libraries
 Source0:	http://cairographics.org/releases/%{_realname}-%{version}.tar.gz
 # Source0-md5:	487b3d7515752fe57f780d0fd707b01a
-Patch0:		%{_realname}-link.patch
+Patch0:		%{name}-dll.patch
+Patch1:		%{name}-dllmain.patch
 URL:		http://cairographics.org/
 BuildRequires:	autoconf >= 2.54
 BuildRequires:	automake >= 1:1.7
@@ -83,7 +84,8 @@ PostScript, PDF i byæ mo¿e OpenGL.
 
 %prep
 %setup -q -n %{_realname}-%{version}
-%patch0 -p1
+#%patch0 -p1
+#%patch1 -p1
 
 %build
 export PKG_CONFIG_PATH=%{_prefix}/lib/pkgconfig
@@ -93,17 +95,21 @@ export PKG_CONFIG_PATH=%{_prefix}/lib/pkgconfig
 %{__autoconf}
 %{__automake}
 %configure \
-	AR="%{target}-ar" \
-	RANLIB="%{target}-ranlib" \
 	--target=%{target} \
-	--host=%{target_platform} \
+	--host=%{target} \
 	%{?with_glitz:--enable-glitz} \
-	--enable-ps \
-	--enable-pdf \
+	--disable-gtk-doc \
 	--disable-xlib \
 	--disable-xlib-render \
+	--enable-freetype \
+	--enable-pdf \
+	--enable-png \
+	--enable-ps \
+	--disable-svg \
 	--enable-windows \
-	--enable-svg \
+
+%{__sed} -i -e 's/^deplibs_check_method=.*/deplibs_check_method="pass_all"/' libtool
+
 %{__make}
 
 %install
@@ -119,7 +125,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 # COPYING contains only notes, not LGPL/MPL texts
 %doc AUTHORS COPYING ChangeLog NEWS README TODO
-%attr(755,root,root) %{_libdir}/lib*.la
-%attr(755,root,root) %{_libdir}/lib*.a
+%{_libdir}/lib*.la
+%{_libdir}/lib*.a
+%{_bindir}/*.dll
 %{_includedir}/*
 %{_pkgconfigdir}/*.pc
