@@ -3,17 +3,15 @@
 %bcond_with	glitz		# build with glitz backend
 #
 Summary:	Cairo - multi-platform 2D graphics library - cross Mingw32 version
-Summary(pl):	Cairo - wieloplatformowa biblioteka graficzna 2D - skro¶na wersja Mingw32
+Summary(pl.UTF-8):	Cairo - wieloplatformowa biblioteka graficzna 2D - skroÅ›na wersja Mingw32
 %define		_realname   cairo
 Name:		crossmingw32-%{_realname}
 Version:	1.2.6
 Release:	1
 License:	LGPL v2.1 or MPL v1.1
-Group:		Libraries
+Group:		Development/Libraries
 Source0:	http://cairographics.org/releases/%{_realname}-%{version}.tar.gz
 # Source0-md5:	487b3d7515752fe57f780d0fd707b01a
-Patch0:		%{name}-dll.patch
-Patch1:		%{name}-dllmain.patch
 URL:		http://cairographics.org/
 BuildRequires:	autoconf >= 2.54
 BuildRequires:	automake >= 1:1.7
@@ -21,11 +19,13 @@ BuildRequires:	crossmingw32-fontconfig
 BuildRequires:	crossmingw32-freetype >= 2.1.10
 %{?with_glitz:BuildRequires:	crossmingw32-glitz >= 0.5.1}
 BuildRequires:	crossmingw32-libpng
-BuildRequires:	crossmingw32-pkgconfig
 BuildRequires:	crossmingw32-zlib
 BuildRequires:	libtool
+BuildRequires:	pkgconfig
+Requires:	crossmingw32-fontconfig
 Requires:	crossmingw32-freetype >= 2.1.10
-%{?with_glitz:Requires:	glitz >= 0.5.1}
+%{?with_glitz:Requires:	crossmingw32-glitz >= 0.5.1}
+Requires:	crossmingw32-libpng
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		no_install_post_strip	1
@@ -33,12 +33,11 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		target			i386-mingw32
 %define		target_platform 	i386-pc-mingw32
 %define		arch			%{_prefix}/%{target}
-%define		gccarch			%{_prefix}/lib/gcc-lib/%{target}
-%define		gcclib			%{_prefix}/lib/gcc-lib/%{target}/%{version}
 
 %define		_sysprefix		/usr
 %define		_prefix			%{_sysprefix}/%{target}
 %define		_pkgconfigdir		%{_prefix}/lib/pkgconfig
+%define		_dlldir			/usr/share/wine/windows/system
 %define		__cc			%{target}-gcc
 %define		__cxx			%{target}-g++
 
@@ -56,36 +55,53 @@ significant addition of translucence in the imaging model). When
 complete, the API is intended to support the complete imaging model of
 PDF 1.4.
 
-Cairo relies on the Xc library for backend rendering. Xc provides an
-abstract interface for rendering to multiple target types. As of this
-writing, Xc allows Cairo to target X drawables as well as generic
-image buffers. Future backends such as PostScript, PDF, and perhaps
-OpenGL are currently being planned.
+This package contains the cross version for Win32.
 
-%description -l pl
-Cairo obs³uguje oparty na wektorach rendering z antyaliasingiem dla X.
-¦cie¿ki sk³adaj± siê z odcinków i splajnów kubicznych, a renderowane
-mog± byæ z dowoln± grubo¶ci± i ró¿nymi stylami po³±czeñ i zakoñczeñ.
-Wszystkie kolory mog± byæ podane z opcjonaln± pó³przezroczysto¶ci±
-(podan± przez wspó³czynnik nieprzezroczysto¶ci lub alpha) i ³±czone
-przy u¿yciu rozszerzonego algorytmu mieszania Portera-Duffa, który
-mo¿na znale¼æ w rozszerzeniu X Render.
+%description -l pl.UTF-8
+Cairo obsÅ‚uguje oparty na wektorach rendering z antyaliasingiem dla X.
+ÅšcieÅ¼ki skÅ‚adajÄ… siÄ™ z odcinkÃ³w i splajnÃ³w kubicznych, a renderowane
+mogÄ… byÄ‡ z dowolnÄ… gruboÅ›ciÄ… i rÃ³Å¼nymi stylami poÅ‚Ä…czeÅ„ i zakoÅ„czeÅ„.
+Wszystkie kolory mogÄ… byÄ‡ podane z opcjonalnÄ… pÃ³Å‚przezroczystoÅ›ciÄ…
+(podanÄ… przez wspÃ³Å‚czynnik nieprzezroczystoÅ›ci lub alpha) i Å‚Ä…czone
+przy uÅ¼yciu rozszerzonego algorytmu mieszania Portera-Duffa, ktÃ³ry
+moÅ¼na znaleÅºÄ‡ w rozszerzeniu X Render.
 
-Cairo eksportuje stanowe API renderuj±ce w duchu podobne do operatorów
-konstruowania ¶cie¿ek, tekstu i rysowania z PostScriptu (ze znacznym
-dodatkiem pó³przezroczysto¶ci w modelu obrazu). Kiedy API zostanie
-ukoñczone, ma obs³ugiwaæ pe³ny model obrazu z PDF w wersji 1.4.
+Cairo eksportuje stanowe API renderujÄ…ce w duchu podobne do operatorÃ³w
+konstruowania Å›cieÅ¼ek, tekstu i rysowania z PostScriptu (ze znacznym
+dodatkiem pÃ³Å‚przezroczystoÅ›ci w modelu obrazu). Kiedy API zostanie
+ukoÅ„czone, ma obsÅ‚ugiwaÄ‡ peÅ‚ny model obrazu z PDF w wersji 1.4.
 
-Cairo do backendowego renderowania wykorzystuje bibliotekê Xc. Xc
-dostarcza abstrakcyjny interfejs do renderowania na wiele rodzajów
-wyj¶æ. Aktualnie Xc pozwala Cairo tworzyæ obiekty X, a tak¿e ogólne
-bufory obrazu. W przysz³o¶ci planowane s± takie backendy jak
-PostScript, PDF i byæ mo¿e OpenGL.
+Ten pakiet zawiera wersjÄ™ skroÅ›nÄ… dla Win32.
+
+%package static
+Summary:	Static cairo library (cross mingw32 version)
+Summary(pl.UTF-8):	Statyczna biblioteka cairo (wersja skroÅ›na mingw32)
+Group:		Development/Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description static
+Static cairo library (cross mingw32 version).
+
+%description static -l pl.UTF-8
+Statyczna biblioteka cairo (wersja skroÅ›na mingw32).
+
+%package dll
+Summary:	DLL cairo library for Windows
+Summary(pl.UTF-8):	Biblioteka DLL cairo dla Windows
+Group:		Applications/Emulators
+Requires:	crossmingw32-fontconfig-dll
+Requires:	crossmingw32-freetype-dll >= 2.1.10
+%{?with_glitz:Requires:	crossmingw32-glitz-dll >= 0.5.1}
+Requires:	crossmingw32-libpng-dll
+
+%description dll
+DLL cairo library for Windows.
+
+%description dll -l pl.UTF-8
+Biblioteka DLL cairo dla Windows.
 
 %prep
 %setup -q -n %{_realname}-%{version}
-#%patch0 -p1
-#%patch1 -p1
 
 %build
 export PKG_CONFIG_PATH=%{_prefix}/lib/pkgconfig
@@ -95,20 +111,19 @@ export PKG_CONFIG_PATH=%{_prefix}/lib/pkgconfig
 %{__autoconf}
 %{__automake}
 %configure \
+	lt_cv_deplibs_check_method=pass_all \
 	--target=%{target} \
 	--host=%{target} \
-	%{?with_glitz:--enable-glitz} \
 	--disable-gtk-doc \
+	--disable-svg \
 	--disable-xlib \
 	--disable-xlib-render \
 	--enable-freetype \
+	%{?with_glitz:--enable-glitz} \
 	--enable-pdf \
 	--enable-png \
 	--enable-ps \
-	--disable-svg \
 	--enable-windows \
-
-%{__sed} -i -e 's/^deplibs_check_method=.*/deplibs_check_method="pass_all"/' libtool
 
 %{__make}
 
@@ -118,6 +133,16 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
+install -d $RPM_BUILD_ROOT%{_dlldir}
+mv -f $RPM_BUILD_ROOT%{_prefix}/bin/*.dll $RPM_BUILD_ROOT%{_dlldir}
+
+%if 0%{!?debug:1}
+%{target}-strip --strip-unneeded -R.comment -R.note $RPM_BUILD_ROOT%{_dlldir}/*.dll
+%{target}-strip -g -R.comment -R.note $RPM_BUILD_ROOT%{_libdir}/*.a
+%endif
+
+rm -rf $RPM_BUILD_ROOT%{_datadir}/gtk-doc
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -125,8 +150,15 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 # COPYING contains only notes, not LGPL/MPL texts
 %doc AUTHORS COPYING ChangeLog NEWS README TODO
-%{_libdir}/lib*.la
-%{_libdir}/lib*.a
-%{_bindir}/*.dll
-%{_includedir}/*
+%{_libdir}/libcairo.dll.a
+%{_libdir}/libcairo.la
+%{_includedir}/cairo
 %{_pkgconfigdir}/*.pc
+
+%files static
+%defattr(644,root,root,755)
+%{_libdir}/libcairo.a
+
+%files dll
+%defattr(644,root,root,755)
+%{_dlldir}/libcairo-*.dll
