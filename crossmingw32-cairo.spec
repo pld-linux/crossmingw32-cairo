@@ -114,7 +114,6 @@ export PKG_CONFIG_LIBDIR=%{_prefix}/lib/pkgconfig
 	--target=%{target} \
 	--host=%{target} \
 	--disable-gtk-doc \
-	--disable-svg \
 	--disable-xlib \
 	--disable-xlib-render \
 	--enable-freetype \
