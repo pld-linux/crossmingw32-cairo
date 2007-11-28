@@ -6,12 +6,12 @@ Summary:	Cairo - multi-platform 2D graphics library - cross Mingw32 version
 Summary(pl.UTF-8):	Cairo - wieloplatformowa biblioteka graficzna 2D - skrośna wersja Mingw32
 %define		realname   cairo
 Name:		crossmingw32-%{realname}
-Version:	1.4.10
+Version:	1.4.12
 Release:	1
-License:	LGPL v2.1 or MPL v1.1
+License:	LGPL v2.1 or MPL 1.1
 Group:		Development/Libraries
 Source0:	http://cairographics.org/releases/%{realname}-%{version}.tar.gz
-# Source0-md5:	5598a5e500ad922e37b159dee72fc993
+# Source0-md5:	8e50c2c0d56388e4ee94196c0c7a7904
 URL:		http://cairographics.org/
 BuildRequires:	autoconf >= 2.54
 BuildRequires:	automake >= 1:1.7
@@ -121,7 +121,8 @@ export PKG_CONFIG_LIBDIR=%{_prefix}/lib/pkgconfig
 	--enable-pdf \
 	--enable-png \
 	--enable-ps \
-	--enable-windows \
+	--enable-svg \
+	--enable-windows
 
 %{__make}
 
@@ -151,7 +152,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libcairo.dll.a
 %{_libdir}/libcairo.la
 %{_includedir}/cairo
-%{_pkgconfigdir}/*.pc
+%{_pkgconfigdir}/cairo.pc
+%{_pkgconfigdir}/cairo-ft.pc
+%{_pkgconfigdir}/cairo-pdf.pc
+%{_pkgconfigdir}/cairo-png.pc
+%{_pkgconfigdir}/cairo-ps.pc
+%{_pkgconfigdir}/cairo-svg.pc
+%{_pkgconfigdir}/cairo-win32.pc
 
 %files static
 %defattr(644,root,root,755)
