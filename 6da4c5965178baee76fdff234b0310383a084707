@@ -1,0 +1,3 @@
+- updated to 1.4.12
+- explicit .pc files list to track enabled/disabled backends
+[fixes CVE-2007-5503]
