@@ -6,19 +6,22 @@ Summary:	Cairo - multi-platform 2D graphics library - cross Mingw32 version
 Summary(pl.UTF-8):	Cairo - wieloplatformowa biblioteka graficzna 2D - skrośna wersja Mingw32
 %define		realname   cairo
 Name:		crossmingw32-%{realname}
-Version:	1.4.14
+Version:	1.6.4
 Release:	1
 License:	LGPL v2.1 or MPL 1.1
 Group:		Development/Libraries
 Source0:	http://cairographics.org/releases/%{realname}-%{version}.tar.gz
-# Source0-md5:	e8c442ff821c0719a69508fecba9038f
+# Source0-md5:	a198d509f9e3a35b78de8bb02174ebb9
+Patch0:		cairo-lt.patch
+Patch1:		cairo-am.patch
 URL:		http://cairographics.org/
-BuildRequires:	autoconf >= 2.54
-BuildRequires:	automake >= 1:1.7
+BuildRequires:	autoconf >= 2.58
+BuildRequires:	automake >= 1:1.8
 BuildRequires:	crossmingw32-fontconfig
 BuildRequires:	crossmingw32-freetype >= 2.1.10
 %{?with_glitz:BuildRequires:	crossmingw32-glitz >= 0.5.1}
 BuildRequires:	crossmingw32-libpng
+BuildRequires:	crossmingw32-pixman >= 0.10.0
 BuildRequires:	crossmingw32-zlib
 BuildRequires:	libtool
 BuildRequires:	pkgconfig >= 1:0.15
@@ -63,7 +66,7 @@ Cairo obsługuje oparty na wektorach rendering z antyaliasingiem dla X.
 mogą być z dowolną grubością i różnymi stylami połączeń i zakończeń.
 Wszystkie kolory mogą być podane z opcjonalną półprzezroczystością
 (podaną przez współczynnik nieprzezroczystości lub alpha) i łączone
-przy użyciu rozszerzonego algorytmu mieszania Portera-Duffa, który
+przy użyciu rozszerzonego algorytmu składania Portera-Duffa, który
 można znaleźć w rozszerzeniu X Render.
 
 Cairo eksportuje stanowe API renderujące w duchu podobne do operatorów
@@ -74,34 +77,37 @@ ukończone, ma obsługiwać pełny model obrazu z PDF w wersji 1.4.
 Ten pakiet zawiera wersję skrośną dla Win32.
 
 %package static
-Summary:	Static cairo library (cross mingw32 version)
-Summary(pl.UTF-8):	Statyczna biblioteka cairo (wersja skrośna mingw32)
+Summary:	Static Cairo library (cross mingw32 version)
+Summary(pl.UTF-8):	Statyczna biblioteka Cairo (wersja skrośna mingw32)
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description static
-Static cairo library (cross mingw32 version).
+Static Cairo library (cross mingw32 version).
 
 %description static -l pl.UTF-8
-Statyczna biblioteka cairo (wersja skrośna mingw32).
+Statyczna biblioteka Cairo (wersja skrośna mingw32).
 
 %package dll
-Summary:	DLL cairo library for Windows
-Summary(pl.UTF-8):	Biblioteka DLL cairo dla Windows
+Summary:	DLL Cairo library for Windows
+Summary(pl.UTF-8):	Biblioteka DLL Cairo dla Windows
 Group:		Applications/Emulators
 Requires:	crossmingw32-fontconfig-dll
 Requires:	crossmingw32-freetype-dll >= 2.1.10
 %{?with_glitz:Requires:	crossmingw32-glitz-dll >= 0.5.1}
 Requires:	crossmingw32-libpng-dll
+Requires:	crossmingw32-pixman-dll >= 0.10.0
 
 %description dll
-DLL cairo library for Windows.
+DLL Cairo library for Windows.
 
 %description dll -l pl.UTF-8
-Biblioteka DLL cairo dla Windows.
+Biblioteka DLL Cairo dla Windows.
 
 %prep
 %setup -q -n %{realname}-%{version}
+%patch0 -p1
+%patch1 -p1
 
 %build
 export PKG_CONFIG_LIBDIR=%{_prefix}/lib/pkgconfig
@@ -149,7 +155,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 # COPYING contains only notes, not LGPL/MPL texts
-%doc AUTHORS COPYING ChangeLog NEWS README TODO
+%doc AUTHORS COPYING ChangeLog NEWS README
 %{_libdir}/libcairo.dll.a
 %{_libdir}/libcairo.la
 %{_includedir}/cairo
@@ -160,6 +166,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/cairo-ps.pc
 %{_pkgconfigdir}/cairo-svg.pc
 %{_pkgconfigdir}/cairo-win32.pc
+%{_pkgconfigdir}/cairo-win32-font.pc
 
 %files static
 %defattr(644,root,root,755)
