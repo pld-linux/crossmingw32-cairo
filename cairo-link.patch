@@ -1,5 +1,5 @@
---- cairo-1.2.2/configure.in.orig	2006-08-08 23:05:54.000000000 +0000
-+++ cairo-1.2.2/configure.in	2006-08-09 07:42:54.315971000 +0000
+--- cairo-1.2.2/configure.ac.orig	2006-08-08 23:05:54.000000000 +0000
++++ cairo-1.2.2/configure.ac	2006-08-09 07:42:54.315971000 +0000
 @@ -227,7 +227,7 @@
  		     if test "x$no_x" = xyes; then
  		       use_xlib="no (requires X development libraries)"
