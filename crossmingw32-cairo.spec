@@ -6,29 +6,29 @@ Summary:	Cairo - multi-platform 2D graphics library - cross Mingw32 version
 Summary(pl.UTF-8):	Cairo - wieloplatformowa biblioteka graficzna 2D - skrośna wersja Mingw32
 %define		realname   cairo
 Name:		crossmingw32-%{realname}
-Version:	1.6.4
+Version:	1.8.0
 Release:	1
-License:	LGPL v2.1 or MPL 1.1
+License:	LGPL v2.1 or MPL v1.1
 Group:		Development/Libraries
 Source0:	http://cairographics.org/releases/%{realname}-%{version}.tar.gz
-# Source0-md5:	a198d509f9e3a35b78de8bb02174ebb9
-Patch0:		cairo-lt.patch
-Patch1:		cairo-am.patch
+# Source0-md5:	4ea70ea87b47e92d318d4e7f5b940f47
+Patch0:		cairo-link.patch
 URL:		http://cairographics.org/
 BuildRequires:	autoconf >= 2.58
 BuildRequires:	automake >= 1:1.8
 BuildRequires:	crossmingw32-fontconfig
-BuildRequires:	crossmingw32-freetype >= 2.1.10
+BuildRequires:	crossmingw32-freetype >= 2.3.0
 %{?with_glitz:BuildRequires:	crossmingw32-glitz >= 0.5.1}
 BuildRequires:	crossmingw32-libpng
-BuildRequires:	crossmingw32-pixman >= 0.10.0
+BuildRequires:	crossmingw32-pixman >= 0.12.0
 BuildRequires:	crossmingw32-zlib
 BuildRequires:	libtool
 BuildRequires:	pkgconfig >= 1:0.15
 Requires:	crossmingw32-fontconfig
-Requires:	crossmingw32-freetype >= 2.1.10
+Requires:	crossmingw32-freetype >= 2.3.0
 %{?with_glitz:Requires:	crossmingw32-glitz >= 0.5.1}
 Requires:	crossmingw32-libpng
+Requires:	crossmingw32-pixman >= 0.12.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		no_install_post_strip	1
@@ -43,6 +43,13 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_dlldir			/usr/share/wine/windows/system
 %define		__cc			%{target}-gcc
 %define		__cxx			%{target}-g++
+
+%ifnarch %{ix86}
+# arch-specific flags (like alpha's -mieee) are not valid for i386 gcc
+%define		optflags	-O2
+%endif
+# -z options are invalid for mingw linker
+%define		filterout_ld	-Wl,-z,.*
 
 %description
 Cairo provides anti-aliased vector-based rendering for X. Paths
@@ -93,10 +100,10 @@ Summary:	DLL Cairo library for Windows
 Summary(pl.UTF-8):	Biblioteka DLL Cairo dla Windows
 Group:		Applications/Emulators
 Requires:	crossmingw32-fontconfig-dll
-Requires:	crossmingw32-freetype-dll >= 2.1.10
+Requires:	crossmingw32-freetype-dll >= 2.3.0
 %{?with_glitz:Requires:	crossmingw32-glitz-dll >= 0.5.1}
 Requires:	crossmingw32-libpng-dll
-Requires:	crossmingw32-pixman-dll >= 0.10.0
+Requires:	crossmingw32-pixman-dll >= 0.12.0
 
 %description dll
 DLL Cairo library for Windows.
@@ -107,12 +114,11 @@ Biblioteka DLL Cairo dla Windows.
 %prep
 %setup -q -n %{realname}-%{version}
 %patch0 -p1
-%patch1 -p1
 
 %build
 export PKG_CONFIG_LIBDIR=%{_prefix}/lib/pkgconfig
 %{__libtoolize}
-%{__aclocal}
+%{__aclocal} -I build
 %{__autoheader}
 %{__autoconf}
 %{__automake}
@@ -128,7 +134,6 @@ export PKG_CONFIG_LIBDIR=%{_prefix}/lib/pkgconfig
 	--enable-pdf \
 	--enable-png \
 	--enable-ps \
-	--enable-svg \
 	--enable-windows
 
 %{__make}
