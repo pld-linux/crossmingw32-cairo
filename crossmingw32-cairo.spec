@@ -6,12 +6,12 @@ Summary:	Cairo - multi-platform 2D graphics library - cross Mingw32 version
 Summary(pl.UTF-8):	Cairo - wieloplatformowa biblioteka graficzna 2D - skrośna wersja Mingw32
 %define		realname   cairo
 Name:		crossmingw32-%{realname}
-Version:	1.8.0
+Version:	1.8.2
 Release:	1
 License:	LGPL v2.1 or MPL v1.1
 Group:		Development/Libraries
 Source0:	http://cairographics.org/releases/%{realname}-%{version}.tar.gz
-# Source0-md5:	4ea70ea87b47e92d318d4e7f5b940f47
+# Source0-md5:	44d406e199c338cb60f7db32ffb32bdb
 Patch0:		cairo-link.patch
 URL:		http://cairographics.org/
 BuildRequires:	autoconf >= 2.58
