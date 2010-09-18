@@ -1,34 +1,29 @@
-#
-# Conditional build:
-%bcond_with	glitz		# build with glitz backend
-#
-Summary:	Cairo - multi-platform 2D graphics library - cross Mingw32 version
-Summary(pl.UTF-8):	Cairo - wieloplatformowa biblioteka graficzna 2D - skrośna wersja Mingw32
+Summary:	Cairo - multi-platform 2D graphics library - cross MinGW32 version
+Summary(pl.UTF-8):	Cairo - wieloplatformowa biblioteka graficzna 2D - skrośna wersja MinGW32
 %define		realname   cairo
 Name:		crossmingw32-%{realname}
-Version:	1.8.10
+Version:	1.10.0
 Release:	1
 License:	LGPL v2.1 or MPL v1.1
 Group:		Development/Libraries
 Source0:	http://cairographics.org/releases/%{realname}-%{version}.tar.gz
-# Source0-md5:	b60a82f405f9400bbfdcf850b1728d25
+# Source0-md5:	70a2ece66cf473d976e2db0f75bf199e
 Patch0:		cairo-link.patch
 URL:		http://cairographics.org/
-BuildRequires:	autoconf >= 2.58
-BuildRequires:	automake >= 1:1.8
-BuildRequires:	crossmingw32-fontconfig
+BuildRequires:	autoconf >= 2.59
+BuildRequires:	automake >= 1:1.9.6
+BuildRequires:	crossmingw32-fontconfig >= 2.2.95
 BuildRequires:	crossmingw32-freetype >= 2.3.0
-%{?with_glitz:BuildRequires:	crossmingw32-glitz >= 0.5.1}
+BuildRequires:	crossmingw32-glib2 >= 2.0
 BuildRequires:	crossmingw32-libpng
-BuildRequires:	crossmingw32-pixman >= 0.12.0
+BuildRequires:	crossmingw32-pixman >= 0.18.4
 BuildRequires:	crossmingw32-zlib
 BuildRequires:	libtool
 BuildRequires:	pkgconfig >= 1:0.15
-Requires:	crossmingw32-fontconfig
+Requires:	crossmingw32-fontconfig >= 2.2.95
 Requires:	crossmingw32-freetype >= 2.3.0
-%{?with_glitz:Requires:	crossmingw32-glitz >= 0.5.1}
 Requires:	crossmingw32-libpng
-Requires:	crossmingw32-pixman >= 0.12.0
+Requires:	crossmingw32-pixman >= 0.18.4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		no_install_post_strip	1
@@ -84,32 +79,69 @@ ukończone, ma obsługiwać pełny model obrazu z PDF w wersji 1.4.
 Ten pakiet zawiera wersję skrośną dla Win32.
 
 %package static
-Summary:	Static Cairo library (cross mingw32 version)
-Summary(pl.UTF-8):	Statyczna biblioteka Cairo (wersja skrośna mingw32)
+Summary:	Static Cairo library (cross MinGW32 version)
+Summary(pl.UTF-8):	Statyczna biblioteka Cairo (wersja skrośna MinGW32)
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description static
-Static Cairo library (cross mingw32 version).
+Static Cairo library (cross MinGW32 version).
 
 %description static -l pl.UTF-8
-Statyczna biblioteka Cairo (wersja skrośna mingw32).
+Statyczna biblioteka Cairo (wersja skrośna MinGW32).
 
 %package dll
 Summary:	DLL Cairo library for Windows
 Summary(pl.UTF-8):	Biblioteka DLL Cairo dla Windows
 Group:		Applications/Emulators
-Requires:	crossmingw32-fontconfig-dll
+Requires:	crossmingw32-fontconfig-dll >= 2.2.95
 Requires:	crossmingw32-freetype-dll >= 2.3.0
-%{?with_glitz:Requires:	crossmingw32-glitz-dll >= 0.5.1}
 Requires:	crossmingw32-libpng-dll
-Requires:	crossmingw32-pixman-dll >= 0.12.0
+Requires:	crossmingw32-pixman-dll >= 0.18.4
 
 %description dll
 DLL Cairo library for Windows.
 
 %description dll -l pl.UTF-8
 Biblioteka DLL Cairo dla Windows.
+
+%package gobject
+Summary:	Cairo GObject functions library - cross MinGW32 version
+Summary(pl.UTF-8):	Biblioteka funkcji Cairo GObject - wersja skrośna MinGW32 
+Group:		Development/Libraries
+Requires:	%{name} = %{version}-%{release}
+Requires:	crossmingw32-glib2 >= 2.0
+
+%description gobject
+Cairo GObject functions library - cross MinGW32 version.
+
+%description gobject -l pl.UTF-8
+Biblioteka funkcji Cairo GObject - wersja skrośna MinGW32.
+
+%package gobject-static
+Summary:	Static Cairo GObject library (cross MinGW32 version)
+Summary(pl.UTF-8):	Statyczna biblioteka Cairo GObject (wersja skrośna MinGW32)
+Group:		Development/Libraries
+Requires:	%{name}-gobject = %{version}-%{release}
+
+%description gobject-static
+Static Cairo GObject library (cross MinGW32 version).
+
+%description gobject-static -l pl.UTF-8
+Statyczna biblioteka Cairo GObject (wersja skrośna MinGW32).
+
+%package gobject-dll
+Summary:	DLL Cairo GObject library for Windows
+Summary(pl.UTF-8):	Biblioteka DLL Cairo GObject dla Windows
+Group:		Applications/Emulators
+Requires:	%{name}-dll = %{version}-%{release}
+Requires:	crossmingw32-glib2-dll >= 2.0
+
+%description gobject-dll
+DLL Cairo GObject library for Windows.
+
+%description gobject-dll -l pl.UTF-8
+Biblioteka DLL Cairo GObject dla Windows.
 
 %prep
 %setup -q -n %{realname}-%{version}
@@ -123,14 +155,15 @@ export PKG_CONFIG_LIBDIR=%{_prefix}/lib/pkgconfig
 %{__autoconf}
 %{__automake}
 %configure \
+	CPPFLAGS="%{rpmcppflags} -Dffs=__builtin_ffs" \
 	lt_cv_deplibs_check_method=pass_all \
 	--target=%{target} \
 	--host=%{target} \
 	--disable-gtk-doc \
+	--disable-silent-rules \
 	--disable-xlib \
 	--disable-xlib-render \
 	--enable-freetype \
-	%{?with_glitz:--enable-glitz} \
 	--enable-pdf \
 	--enable-png \
 	--enable-ps \
@@ -163,8 +196,12 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog NEWS README
 %{_libdir}/libcairo.dll.a
 %{_libdir}/libcairo.la
+%{_libdir}/libcairo-script-interpreter.dll.a
+%{_libdir}/libcairo-script-interpreter.la
 %{_includedir}/cairo
+%exclude %{_includedir}/cairo/cairo-gobject.h
 %{_pkgconfigdir}/cairo.pc
+%{_pkgconfigdir}/cairo-fc.pc
 %{_pkgconfigdir}/cairo-ft.pc
 %{_pkgconfigdir}/cairo-pdf.pc
 %{_pkgconfigdir}/cairo-png.pc
@@ -176,7 +213,24 @@ rm -rf $RPM_BUILD_ROOT
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libcairo.a
+%{_libdir}/libcairo-script-interpreter.a
 
 %files dll
 %defattr(644,root,root,755)
-%{_dlldir}/libcairo-*.dll
+%{_dlldir}/libcairo-2.dll
+%{_dlldir}/libcairo-script-interpreter-2.dll
+
+%files gobject
+%defattr(644,root,root,755)
+%{_libdir}/libcairo-gobject.dll.a
+%{_libdir}/libcairo-gobject.la
+%{_includedir}/cairo/cairo-gobject.h
+%{_pkgconfigdir}/cairo-gobject.pc
+
+%files gobject-static
+%defattr(644,root,root,755)
+%{_libdir}/libcairo-gobject.a
+
+%files gobject-dll
+%defattr(644,root,root,755)
+%{_dlldir}/libcairo-gobject-2.dll
