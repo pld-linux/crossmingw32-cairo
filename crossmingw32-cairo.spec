@@ -3,7 +3,7 @@ Summary(pl.UTF-8):	Cairo - wieloplatformowa biblioteka graficzna 2D - skrośna w
 %define		realname   cairo
 Name:		crossmingw32-%{realname}
 Version:	1.12.14
-Release:	2
+Release:	3
 License:	LGPL v2.1 or MPL v1.1
 Group:		Development/Libraries
 Source0:	http://cairographics.org/releases/%{realname}-%{version}.tar.xz
@@ -40,6 +40,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		__cc			%{target}-gcc
 %define		__cxx			%{target}-g++
 %define		__pkgconfig_provides	%{nil}
+%define		__pkgconfig_requires	%{nil}
 
 %ifnarch %{ix86}
 # arch-specific flags (like alpha's -mieee) are not valid for i386 gcc
