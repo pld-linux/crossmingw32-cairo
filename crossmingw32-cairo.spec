@@ -3,7 +3,7 @@ Summary(pl.UTF-8):	Cairo - wieloplatformowa biblioteka graficzna 2D - skrośna w
 %define		realname   cairo
 Name:		crossmingw32-%{realname}
 Version:	1.12.16
-Release:	1
+Release:	2
 License:	LGPL v2.1 or MPL v1.1
 Group:		Development/Libraries
 Source0:	http://cairographics.org/releases/%{realname}-%{version}.tar.xz
