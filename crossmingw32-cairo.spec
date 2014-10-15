@@ -2,12 +2,12 @@ Summary:	Cairo - multi-platform 2D graphics library - cross MinGW32 version
 Summary(pl.UTF-8):	Cairo - wieloplatformowa biblioteka graficzna 2D - skrośna wersja MinGW32
 %define		realname   cairo
 Name:		crossmingw32-%{realname}
-Version:	1.12.16
-Release:	2
+Version:	1.14.0
+Release:	1
 License:	LGPL v2.1 or MPL v1.1
 Group:		Development/Libraries
 Source0:	http://cairographics.org/releases/%{realname}-%{version}.tar.xz
-# Source0-md5:	a1304edcdc99282f478b995ee5f8f854
+# Source0-md5:	fc3a5edeba703f906f2241b394f0cced
 Patch0:		cairo-link.patch
 Patch1:		cairo-mingw32.patch
 URL:		http://cairographics.org/
@@ -15,16 +15,16 @@ BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.11
 BuildRequires:	crossmingw32-fontconfig >= 2.2.95
 BuildRequires:	crossmingw32-freetype >= 2.3.0
-BuildRequires:	crossmingw32-glib2 >= 2.0
+BuildRequires:	crossmingw32-glib2 >= 2.14
 BuildRequires:	crossmingw32-libpng
-BuildRequires:	crossmingw32-pixman >= 0.22.0
+BuildRequires:	crossmingw32-pixman >= 0.30.0
 BuildRequires:	crossmingw32-zlib
 BuildRequires:	libtool >= 2:2.2
-BuildRequires:	pkgconfig >= 1:0.15
+BuildRequires:	pkgconfig >= 1:0.18
 Requires:	crossmingw32-fontconfig >= 2.2.95
 Requires:	crossmingw32-freetype >= 2.3.0
 Requires:	crossmingw32-libpng
-Requires:	crossmingw32-pixman >= 0.22.0
+Requires:	crossmingw32-pixman >= 0.30.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		no_install_post_strip	1
@@ -103,7 +103,7 @@ Group:		Applications/Emulators
 Requires:	crossmingw32-fontconfig-dll >= 2.2.95
 Requires:	crossmingw32-freetype-dll >= 2.3.0
 Requires:	crossmingw32-libpng-dll
-Requires:	crossmingw32-pixman-dll >= 0.22.0
+Requires:	crossmingw32-pixman-dll >= 0.30.0
 
 %description dll
 DLL Cairo library for Windows.
@@ -116,7 +116,7 @@ Summary:	Cairo GObject functions library - cross MinGW32 version
 Summary(pl.UTF-8):	Biblioteka funkcji Cairo GObject - wersja skrośna MinGW32 
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	crossmingw32-glib2 >= 2.0
+Requires:	crossmingw32-glib2 >= 2.14
 
 %description gobject
 Cairo GObject functions library - cross MinGW32 version.
@@ -141,7 +141,7 @@ Summary:	DLL Cairo GObject library for Windows
 Summary(pl.UTF-8):	Biblioteka DLL Cairo GObject dla Windows
 Group:		Applications/Emulators
 Requires:	%{name}-dll = %{version}-%{release}
-Requires:	crossmingw32-glib2-dll >= 2.0
+Requires:	crossmingw32-glib2-dll >= 2.14
 
 %description gobject-dll
 DLL Cairo GObject library for Windows.
