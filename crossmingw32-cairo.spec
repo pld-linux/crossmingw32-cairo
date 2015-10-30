@@ -2,14 +2,15 @@ Summary:	Cairo - multi-platform 2D graphics library - cross MinGW32 version
 Summary(pl.UTF-8):	Cairo - wieloplatformowa biblioteka graficzna 2D - skrośna wersja MinGW32
 %define		realname   cairo
 Name:		crossmingw32-%{realname}
-Version:	1.14.2
-Release:	3
+Version:	1.14.4
+Release:	1
 License:	LGPL v2.1 or MPL v1.1
 Group:		Development/Libraries
 Source0:	http://cairographics.org/releases/%{realname}-%{version}.tar.xz
-# Source0-md5:	e1cdfaf1c6c995c4d4c54e07215b0118
+# Source0-md5:	90a929e8fe66fb5d19b5adaaea1e9a12
 Patch0:		cairo-link.patch
 Patch1:		cairo-mingw32.patch
+Patch2:		cairo-add-cairo-API-to-setup-Win32-surface-for-HDC.patch
 URL:		http://cairographics.org/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.11
@@ -153,6 +154,7 @@ Biblioteka DLL Cairo GObject dla Windows.
 %setup -q -n %{realname}-%{version}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 export PKG_CONFIG_LIBDIR=%{_prefix}/lib/pkgconfig

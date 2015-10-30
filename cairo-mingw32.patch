@@ -9,3 +9,13 @@
  #define WIN32_LEAN_AND_MEAN
  #include <windows.h>
 
+--- cairo-1.14.4/boilerplate/cairo-boilerplate-win32.c.orig	2015-10-27 22:04:22.000000000 +0100
++++ cairo-1.14.4/boilerplate/cairo-boilerplate-win32.c	2015-10-30 17:16:38.317127499 +0100
+@@ -26,6 +26,7 @@
+ 
+ #include "cairo-boilerplate-private.h"
+ 
++#include <limits.h>
+ #include <cairo-win32.h>
+ 
+ static const cairo_user_data_key_t win32_closure_key;
