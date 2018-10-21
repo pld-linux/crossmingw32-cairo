@@ -1,21 +1,26 @@
+#
+# Conditional build:
+%bcond_with	gl		# OpenGL surface backend
+
 Summary:	Cairo - multi-platform 2D graphics library - cross MinGW32 version
 Summary(pl.UTF-8):	Cairo - wieloplatformowa biblioteka graficzna 2D - skrośna wersja MinGW32
 %define		realname   cairo
 Name:		crossmingw32-%{realname}
-Version:	1.14.12
-Release:	2
+Version:	1.16.0
+Release:	1
 License:	LGPL v2.1 or MPL v1.1
 Group:		Development/Libraries
 Source0:	https://www.cairographics.org/releases/%{realname}-%{version}.tar.xz
-# Source0-md5:	9f0db9dbfca0966be8acd682e636d165
+# Source0-md5:	f19e0353828269c22bd72e271243a552
 Patch0:		cairo-link.patch
 Patch1:		cairo-mingw32.patch
-Patch2:		cairo-add-cairo-API-to-setup-Win32-surface-for-HDC.patch
+# https://gitlab.freedesktop.org/cairo/cairo/issues/204
+Patch2:		cairo-mingw32-gl.patch
 URL:		https://www.cairographics.org/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.11
 BuildRequires:	crossmingw32-fontconfig >= 2.2.95
-BuildRequires:	crossmingw32-freetype >= 2.3.0
+BuildRequires:	crossmingw32-freetype >= 2.5.1
 BuildRequires:	crossmingw32-glib2 >= 2.14
 BuildRequires:	crossmingw32-libpng
 BuildRequires:	crossmingw32-pixman >= 0.30.0
@@ -23,7 +28,7 @@ BuildRequires:	crossmingw32-zlib
 BuildRequires:	libtool >= 2:2.2
 BuildRequires:	pkgconfig >= 1:0.18
 Requires:	crossmingw32-fontconfig >= 2.2.95
-Requires:	crossmingw32-freetype >= 2.3.0
+Requires:	crossmingw32-freetype >= 2.5.1
 Requires:	crossmingw32-libpng
 Requires:	crossmingw32-pixman >= 0.30.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -102,7 +107,7 @@ Summary:	DLL Cairo library for Windows
 Summary(pl.UTF-8):	Biblioteka DLL Cairo dla Windows
 Group:		Applications/Emulators
 Requires:	crossmingw32-fontconfig-dll >= 2.2.95
-Requires:	crossmingw32-freetype-dll >= 2.3.0
+Requires:	crossmingw32-freetype-dll >= 2.5.1
 Requires:	crossmingw32-libpng-dll
 Requires:	crossmingw32-pixman-dll >= 0.30.0
 
@@ -171,8 +176,8 @@ export PKG_CONFIG_LIBDIR=%{_prefix}/lib/pkgconfig
 	--disable-gtk-doc \
 	--disable-silent-rules \
 	--disable-xlib \
-	--disable-xlib-render \
-	--enable-freetype \
+	--enable-ft \
+	%{?with_gl:--enable-gl} \
 	--enable-pdf \
 	--enable-png \
 	--enable-ps \
@@ -214,12 +219,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/cairo.pc
 %{_pkgconfigdir}/cairo-fc.pc
 %{_pkgconfigdir}/cairo-ft.pc
+%{?with_gl:%{_pkgconfigdir}/cairo-gl.pc}
 %{_pkgconfigdir}/cairo-pdf.pc
 %{_pkgconfigdir}/cairo-png.pc
 %{_pkgconfigdir}/cairo-ps.pc
 %{_pkgconfigdir}/cairo-script.pc
 %{_pkgconfigdir}/cairo-svg.pc
 %{_pkgconfigdir}/cairo-tee.pc
+%{?with_gl:%{_pkgconfigdir}/cairo-wgl.pc}
 %{_pkgconfigdir}/cairo-win32.pc
 %{_pkgconfigdir}/cairo-win32-font.pc
 %{_pkgconfigdir}/cairo-xml.pc

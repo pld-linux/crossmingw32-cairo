@@ -30,3 +30,41 @@
  #define access _access
  #define fdopen _fdopen
  #define hypot _hypot
+--- cairo-1.16.0/configure.ac.orig	2018-10-21 16:21:17.304355378 +0200
++++ cairo-1.16.0/configure.ac	2018-10-21 17:09:07.484322608 +0200
+@@ -334,7 +334,11 @@
+ 	  AC_CHECK_HEADER(GL/gl.h,, [use_gl="no (gl.pc nor OpenGL headers not found)"])
+ 	  if test "x$use_gl" = "xyes"; then
+ 	      gl_NONPKGCONFIG_CFLAGS=
++	      if test "x$have_windows" = xyes; then
++		      gl_NONPKGCONFIG_LIBS="-lopengl32"
++	      else
+ 	      gl_NONPKGCONFIG_LIBS="-lGL"
++	      fi
+ 	  fi])
+ 
+   if test "x$have_dl" = "xyes" -a "x$have_dlsym" = "xyes"; then
+--- cairo-1.16.0/test/Makefile.am.orig	2018-08-17 03:10:53.000000000 +0200
++++ cairo-1.16.0/test/Makefile.am	2018-10-21 18:46:12.054256102 +0200
+@@ -17,8 +17,11 @@ endif
+ endif
+ 
+ if CAIRO_HAS_GL_SURFACE
++if CAIRO_HAS_XLIB_SURFACE
++# gl_surface test relies on X11/GLX
+ test_sources += $(gl_surface_test_sources)
+ endif
++endif
+ 
+ if CAIRO_HAS_EGL_FUNCTIONS
+ test_sources += $(egl_surface_test_sources)
+--- cairo-1.16.0/boilerplate/cairo-boilerplate-wgl.c.orig	2018-08-17 03:10:53.000000000 +0200
++++ cairo-1.16.0/boilerplate/cairo-boilerplate-wgl.c	2018-10-21 20:14:56.554195307 +0200
+@@ -35,6 +35,7 @@
+ 
+ #include "cairo-boilerplate-private.h"
+ 
++#include <GL/gl.h>
+ #include <cairo-gl.h>
+ 
+ static const cairo_user_data_key_t gl_closure_key;
