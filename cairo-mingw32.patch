@@ -32,12 +32,13 @@
  #define hypot _hypot
 --- cairo-1.16.0/configure.ac.orig	2018-10-21 16:21:17.304355378 +0200
 +++ cairo-1.16.0/configure.ac	2018-10-21 17:09:07.484322608 +0200
-@@ -334,7 +334,11 @@
+@@ -334,7 +334,12 @@
  	  AC_CHECK_HEADER(GL/gl.h,, [use_gl="no (gl.pc nor OpenGL headers not found)"])
  	  if test "x$use_gl" = "xyes"; then
  	      gl_NONPKGCONFIG_CFLAGS=
 +	      if test "x$have_windows" = xyes; then
 +		      gl_NONPKGCONFIG_LIBS="-lopengl32"
++		      gl_REQUIRES=
 +	      else
  	      gl_NONPKGCONFIG_LIBS="-lGL"
 +	      fi
