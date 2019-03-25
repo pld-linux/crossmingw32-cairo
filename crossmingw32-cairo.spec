@@ -7,7 +7,7 @@ Summary(pl.UTF-8):	Cairo - wieloplatformowa biblioteka graficzna 2D - skrośna w
 %define		realname   cairo
 Name:		crossmingw32-%{realname}
 Version:	1.16.0
-Release:	2
+Release:	3
 License:	LGPL v2.1 or MPL v1.1
 Group:		Development/Libraries
 Source0:	https://www.cairographics.org/releases/%{realname}-%{version}.tar.xz
@@ -194,7 +194,9 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT%{_dlldir}
-mv -f $RPM_BUILD_ROOT%{_prefix}/bin/*.dll $RPM_BUILD_ROOT%{_dlldir}
+%{__mv} $RPM_BUILD_ROOT%{_prefix}/bin/*.dll $RPM_BUILD_ROOT%{_dlldir}
+
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libcairo*.la
 
 %if 0%{!?debug:1}
 %{target}-strip --strip-unneeded -R.comment -R.note $RPM_BUILD_ROOT%{_dlldir}/*.dll
@@ -211,9 +213,7 @@ rm -rf $RPM_BUILD_ROOT
 # COPYING contains only notes, not LGPL/MPL texts
 %doc AUTHORS COPYING ChangeLog NEWS README
 %{_libdir}/libcairo.dll.a
-%{_libdir}/libcairo.la
 %{_libdir}/libcairo-script-interpreter.dll.a
-%{_libdir}/libcairo-script-interpreter.la
 %{_includedir}/cairo
 %exclude %{_includedir}/cairo/cairo-gobject.h
 %{_pkgconfigdir}/cairo.pc
@@ -244,7 +244,6 @@ rm -rf $RPM_BUILD_ROOT
 %files gobject
 %defattr(644,root,root,755)
 %{_libdir}/libcairo-gobject.dll.a
-%{_libdir}/libcairo-gobject.la
 %{_includedir}/cairo/cairo-gobject.h
 %{_pkgconfigdir}/cairo-gobject.pc
 
