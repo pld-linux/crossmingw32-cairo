@@ -1,6 +1,6 @@
 #
 # Conditional build:
-%bcond_with	gl		# OpenGL surface backend
+%bcond_with	opengl		# OpenGL surface backend
 
 Summary:	Cairo - multi-platform 2D graphics library - cross MinGW32 version
 Summary(pl.UTF-8):	Cairo - wieloplatformowa biblioteka graficzna 2D - skrośna wersja MinGW32
@@ -177,7 +177,7 @@ export PKG_CONFIG_LIBDIR=%{_prefix}/lib/pkgconfig
 	--disable-silent-rules \
 	--disable-xlib \
 	--enable-ft \
-	%{?with_gl:--enable-gl} \
+	%{?with_opengl:--enable-gl} \
 	--enable-pdf \
 	--enable-png \
 	--enable-ps \
@@ -219,14 +219,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/cairo.pc
 %{_pkgconfigdir}/cairo-fc.pc
 %{_pkgconfigdir}/cairo-ft.pc
-%{?with_gl:%{_pkgconfigdir}/cairo-gl.pc}
+%{?with_opengl:%{_pkgconfigdir}/cairo-gl.pc}
 %{_pkgconfigdir}/cairo-pdf.pc
 %{_pkgconfigdir}/cairo-png.pc
 %{_pkgconfigdir}/cairo-ps.pc
 %{_pkgconfigdir}/cairo-script.pc
 %{_pkgconfigdir}/cairo-svg.pc
 %{_pkgconfigdir}/cairo-tee.pc
-%{?with_gl:%{_pkgconfigdir}/cairo-wgl.pc}
+%{?with_opengl:%{_pkgconfigdir}/cairo-wgl.pc}
 %{_pkgconfigdir}/cairo-win32.pc
 %{_pkgconfigdir}/cairo-win32-font.pc
 %{_pkgconfigdir}/cairo-xml.pc
