@@ -1,36 +1,29 @@
-#
-# Conditional build:
-%bcond_with	opengl		# OpenGL surface backend
-
+# TODO: dwrite=enabled (BR: libd2d1, libdwrite, d2d1.h, dwrite.h
 Summary:	Cairo - multi-platform 2D graphics library - cross MinGW32 version
 Summary(pl.UTF-8):	Cairo - wieloplatformowa biblioteka graficzna 2D - skrośna wersja MinGW32
 %define		realname   cairo
 Name:		crossmingw32-%{realname}
-Version:	1.16.0
-Release:	3
+Version:	1.18.0
+Release:	1
 License:	LGPL v2.1 or MPL v1.1
 Group:		Development/Libraries
 Source0:	https://www.cairographics.org/releases/%{realname}-%{version}.tar.xz
-# Source0-md5:	f19e0353828269c22bd72e271243a552
-Patch0:		cairo-link.patch
-Patch1:		cairo-mingw32.patch
-# https://gitlab.freedesktop.org/cairo/cairo/issues/204
-Patch2:		cairo-mingw32-gl.patch
+# Source0-md5:	3f0685fbadc530606f965b9645bb51d9
+Patch0:		cairo-mingw32.patch
 URL:		https://www.cairographics.org/
-BuildRequires:	autoconf >= 2.63
-BuildRequires:	automake >= 1:1.11
 BuildRequires:	crossmingw32-fontconfig >= 2.2.95
-BuildRequires:	crossmingw32-freetype >= 2.5.1
+BuildRequires:	crossmingw32-freetype >= 2.13.0
 BuildRequires:	crossmingw32-glib2 >= 2.14
-BuildRequires:	crossmingw32-libpng
-BuildRequires:	crossmingw32-pixman >= 0.30.0
+BuildRequires:	crossmingw32-libpng >= 1.4.0
+BuildRequires:	crossmingw32-pixman >= 0.36.0
 BuildRequires:	crossmingw32-zlib
-BuildRequires:	libtool >= 2:2.2
+BuildRequires:	meson >= 0.59.0
+BuildRequires:	ninja >= 1.5
 BuildRequires:	pkgconfig >= 1:0.18
 Requires:	crossmingw32-fontconfig >= 2.2.95
-Requires:	crossmingw32-freetype >= 2.5.1
-Requires:	crossmingw32-libpng
-Requires:	crossmingw32-pixman >= 0.30.0
+Requires:	crossmingw32-freetype >= 2.13.0
+Requires:	crossmingw32-libpng >= 1.4.0
+Requires:	crossmingw32-pixman >= 0.36.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		no_install_post_strip	1
@@ -107,9 +100,9 @@ Summary:	DLL Cairo library for Windows
 Summary(pl.UTF-8):	Biblioteka DLL Cairo dla Windows
 Group:		Applications/Emulators
 Requires:	crossmingw32-fontconfig-dll >= 2.2.95
-Requires:	crossmingw32-freetype-dll >= 2.5.1
-Requires:	crossmingw32-libpng-dll
-Requires:	crossmingw32-pixman-dll >= 0.30.0
+Requires:	crossmingw32-freetype-dll >= 2.13.0
+Requires:	crossmingw32-libpng-dll >= 1.4.0
+Requires:	crossmingw32-pixman-dll >= 0.36.0
 
 %description dll
 DLL Cairo library for Windows.
@@ -158,45 +151,52 @@ Biblioteka DLL Cairo GObject dla Windows.
 %prep
 %setup -q -n %{realname}-%{version}
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
+
+cat > meson-cross.txt <<'EOF'
+[host_machine]
+system = 'windows'
+cpu_family = 'x86'
+cpu = 'i386'
+endian='little'
+[binaries]
+c = '%{target}-gcc'
+cpp = '%{target}-g++'
+ar = '%{target}-ar'
+windres = '%{target}-windres'
+pkgconfig = 'pkg-config'
+[built-in options]
+%ifarch %{ix86}
+c_args = ['%(echo %{rpmcflags} | sed -e "s/ \+/ /g;s/ /', '/g")']
+%else
+# arch-specific flags (like alpha's -mieee) are not valid for i386 gcc.
+c_args = ['-O2']
+%endif
+EOF
 
 %build
 export PKG_CONFIG_LIBDIR=%{_prefix}/lib/pkgconfig
-%{__libtoolize}
-%{__aclocal} -I build
-%{__autoheader}
-%{__autoconf}
-%{__automake}
-%configure \
-	CPPFLAGS="%{rpmcppflags} -Dffs=__builtin_ffs" \
-	lt_cv_deplibs_check_method=pass_all \
-	--target=%{target} \
-	--host=%{target} \
-	--disable-gtk-doc \
-	--disable-silent-rules \
-	--disable-xlib \
-	--enable-ft \
-	%{?with_opengl:--enable-gl} \
-	--enable-pdf \
-	--enable-png \
-	--enable-ps \
-	--enable-tee \
-	--enable-windows \
-	--enable-xml
+%meson build \
+	--cross-file meson-cross.txt \
+	-Ddwrite=disabled \
+	-Dfontconfig=enabled \
+	-Dfreetype=enabled \
+	-Dpng=enabled \
+	-Dspectre=disabled \
+	-Dtee=enabled \
+	-Dtests=disabled \
+	-Dxcb=disabled \
+	-Dxlib=disabled \
+	-Dzlib=enabled
 
-%{__make}
+%ninja_build -C build
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
+%ninja_install -C build
 
 install -d $RPM_BUILD_ROOT%{_dlldir}
 %{__mv} $RPM_BUILD_ROOT%{_prefix}/bin/*.dll $RPM_BUILD_ROOT%{_dlldir}
-
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/libcairo*.la
 
 %if 0%{!?debug:1}
 %{target}-strip --strip-unneeded -R.comment -R.note $RPM_BUILD_ROOT%{_dlldir}/*.dll
@@ -211,7 +211,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 # COPYING contains only notes, not LGPL/MPL texts
-%doc AUTHORS COPYING ChangeLog NEWS README
+%doc AUTHORS COPYING NEWS README.md
 %{_libdir}/libcairo.dll.a
 %{_libdir}/libcairo-script-interpreter.dll.a
 %{_includedir}/cairo
@@ -219,17 +219,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/cairo.pc
 %{_pkgconfigdir}/cairo-fc.pc
 %{_pkgconfigdir}/cairo-ft.pc
-%{?with_opengl:%{_pkgconfigdir}/cairo-gl.pc}
 %{_pkgconfigdir}/cairo-pdf.pc
 %{_pkgconfigdir}/cairo-png.pc
 %{_pkgconfigdir}/cairo-ps.pc
 %{_pkgconfigdir}/cairo-script.pc
+%{_pkgconfigdir}/cairo-script-interpreter.pc
 %{_pkgconfigdir}/cairo-svg.pc
 %{_pkgconfigdir}/cairo-tee.pc
-%{?with_opengl:%{_pkgconfigdir}/cairo-wgl.pc}
 %{_pkgconfigdir}/cairo-win32.pc
 %{_pkgconfigdir}/cairo-win32-font.pc
-%{_pkgconfigdir}/cairo-xml.pc
 
 %files static
 %defattr(644,root,root,755)

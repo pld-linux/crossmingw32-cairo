@@ -1,71 +1,11 @@
---- cairo-1.12.0/util/cairo-missing/cairo-missing.h.orig	2012-02-02 01:48:15.000000000 +0100
-+++ cairo-1.12.0/util/cairo-missing/cairo-missing.h	2012-03-25 12:56:29.970335651 +0200
-@@ -37,7 +37,7 @@
- #include <string.h>
- #include <sys/types.h>
- 
--#ifdef _WIN32
-+#if defined(_WIN32) && !defined(__MINGW32__)
- #define WIN32_LEAN_AND_MEAN
- #include <windows.h>
-
---- cairo-1.14.4/boilerplate/cairo-boilerplate-win32.c.orig	2015-10-27 22:04:22.000000000 +0100
-+++ cairo-1.14.4/boilerplate/cairo-boilerplate-win32.c	2015-10-30 17:16:38.317127499 +0100
-@@ -26,6 +26,7 @@
- 
- #include "cairo-boilerplate-private.h"
- 
-+#include <limits.h>
- #include <cairo-win32.h>
- 
- static const cairo_user_data_key_t win32_closure_key;
---- cairo-1.14.12/src/cairo-compiler-private.h.orig	2017-12-04 23:24:46.000000000 +0100
-+++ cairo-1.14.12/src/cairo-compiler-private.h	2018-09-27 21:39:54.869047194 +0200
-@@ -195,7 +195,7 @@
+--- cairo-1.18.0/src/cairo-compiler-private.h.orig	2023-09-25 17:24:13.379273100 +0200
++++ cairo-1.18.0/src/cairo-compiler-private.h	2023-09-25 17:24:48.662415288 +0200
+@@ -149,7 +149,7 @@
  #define __attribute__(x)
  #endif
  
 -#if (defined(__WIN32__) && !defined(__WINE__)) || defined(_MSC_VER)
 +#if (defined(__WIN32__) && !defined(__WINE__) && !defined(__MINGW32__)) || defined(_MSC_VER)
  #define access _access
- #define fdopen _fdopen
- #define hypot _hypot
---- cairo-1.16.0/configure.ac.orig	2018-10-21 16:21:17.304355378 +0200
-+++ cairo-1.16.0/configure.ac	2018-10-21 17:09:07.484322608 +0200
-@@ -334,7 +334,12 @@
- 	  AC_CHECK_HEADER(GL/gl.h,, [use_gl="no (gl.pc nor OpenGL headers not found)"])
- 	  if test "x$use_gl" = "xyes"; then
- 	      gl_NONPKGCONFIG_CFLAGS=
-+	      if test "x$have_windows" = xyes; then
-+		      gl_NONPKGCONFIG_LIBS="-lopengl32"
-+		      gl_REQUIRES=
-+	      else
- 	      gl_NONPKGCONFIG_LIBS="-lGL"
-+	      fi
- 	  fi])
- 
-   if test "x$have_dl" = "xyes" -a "x$have_dlsym" = "xyes"; then
---- cairo-1.16.0/test/Makefile.am.orig	2018-08-17 03:10:53.000000000 +0200
-+++ cairo-1.16.0/test/Makefile.am	2018-10-21 18:46:12.054256102 +0200
-@@ -17,8 +17,11 @@ endif
- endif
- 
- if CAIRO_HAS_GL_SURFACE
-+if CAIRO_HAS_XLIB_SURFACE
-+# gl_surface test relies on X11/GLX
- test_sources += $(gl_surface_test_sources)
- endif
-+endif
- 
- if CAIRO_HAS_EGL_FUNCTIONS
- test_sources += $(egl_surface_test_sources)
---- cairo-1.16.0/boilerplate/cairo-boilerplate-wgl.c.orig	2018-08-17 03:10:53.000000000 +0200
-+++ cairo-1.16.0/boilerplate/cairo-boilerplate-wgl.c	2018-10-21 20:14:56.554195307 +0200
-@@ -35,6 +35,7 @@
- 
- #include "cairo-boilerplate-private.h"
- 
-+#include <GL/gl.h>
- #include <cairo-gl.h>
- 
- static const cairo_user_data_key_t gl_closure_key;
+ #ifndef R_OK
+ #define R_OK 4
