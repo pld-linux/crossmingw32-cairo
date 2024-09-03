@@ -3,27 +3,28 @@ Summary:	Cairo - multi-platform 2D graphics library - cross MinGW32 version
 Summary(pl.UTF-8):	Cairo - wieloplatformowa biblioteka graficzna 2D - skrośna wersja MinGW32
 %define		realname   cairo
 Name:		crossmingw32-%{realname}
-Version:	1.18.0
+Version:	1.18.2
 Release:	1
 License:	LGPL v2.1 or MPL v1.1
 Group:		Development/Libraries
 Source0:	https://www.cairographics.org/releases/%{realname}-%{version}.tar.xz
-# Source0-md5:	3f0685fbadc530606f965b9645bb51d9
+# Source0-md5:	5ad67c707edd0003f1b91c8bbc0005c1
 Patch0:		cairo-mingw32.patch
 URL:		https://www.cairographics.org/
-BuildRequires:	crossmingw32-fontconfig >= 2.2.95
+BuildRequires:	crossmingw32-fontconfig >= 2.13.0
 BuildRequires:	crossmingw32-freetype >= 2.13.0
+BuildRequires:	crossmingw32-gcc >= 1:4.7
 BuildRequires:	crossmingw32-glib2 >= 2.14
 BuildRequires:	crossmingw32-libpng >= 1.4.0
-BuildRequires:	crossmingw32-pixman >= 0.36.0
+BuildRequires:	crossmingw32-pixman >= 0.40.0
 BuildRequires:	crossmingw32-zlib
 BuildRequires:	meson >= 0.59.0
 BuildRequires:	ninja >= 1.5
 BuildRequires:	pkgconfig >= 1:0.18
-Requires:	crossmingw32-fontconfig >= 2.2.95
+Requires:	crossmingw32-fontconfig >= 2.13.0
 Requires:	crossmingw32-freetype >= 2.13.0
 Requires:	crossmingw32-libpng >= 1.4.0
-Requires:	crossmingw32-pixman >= 0.36.0
+Requires:	crossmingw32-pixman >= 0.40.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		no_install_post_strip	1
@@ -100,10 +101,10 @@ Statyczna biblioteka Cairo (wersja skrośna MinGW32).
 Summary:	DLL Cairo library for Windows
 Summary(pl.UTF-8):	Biblioteka DLL Cairo dla Windows
 Group:		Applications/Emulators
-Requires:	crossmingw32-fontconfig-dll >= 2.2.95
+Requires:	crossmingw32-fontconfig-dll >= 2.13.0
 Requires:	crossmingw32-freetype-dll >= 2.13.0
 Requires:	crossmingw32-libpng-dll >= 1.4.0
-Requires:	crossmingw32-pixman-dll >= 0.36.0
+Requires:	crossmingw32-pixman-dll >= 0.40.0
 
 %description dll
 DLL Cairo library for Windows.
