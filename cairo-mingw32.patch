@@ -9,3 +9,25 @@
  #define access _access
  #ifndef R_OK
  #define R_OK 4
+--- cairo-1.18.4/src/win32/cairo-win32-system.c.orig	2025-03-08 13:35:35.000000000 +0100
++++ cairo-1.18.4/src/win32/cairo-win32-system.c	2025-03-13 06:20:17.072351110 +0100
+@@ -93,7 +93,7 @@ _cairo_win32_load_library_from_system32
+ {
+     HMODULE module_handle;
+ 
+-    module_handle = LoadLibraryExW (name, NULL, LOAD_LIBRARY_SEARCH_SYSTEM32);
++    module_handle = LoadLibraryExW (name, NULL, 0x800 /* LOAD_LIBRARY_SEARCH_SYSTEM32 */);
+     if (module_handle == NULL) {
+         DWORD code = GetLastError();
+         if (code == ERROR_INVALID_PARAMETER) {
+--- cairo-1.18.4/meson.build.orig	2025-03-08 13:35:35.000000000 +0100
++++ cairo-1.18.4/meson.build	2025-03-13 06:23:47.276467981 +0100
+@@ -536,7 +536,7 @@ if host_machine.system() == 'windows'
+ 
+     add_project_arguments('-DWINVER=_WIN32_WINNT_WIN10', '-D_WIN32_WINNT=_WIN32_WINNT_WIN10', '-DNTDDI_VERSION=NTDDI_WIN10_RS3', language: ['c', 'cpp'])
+   else
+-    add_project_arguments('-DWINVER=_WIN32_WINNT_WIN2K', '-D_WIN32_WINNT=_WIN32_WINNT_WIN2K', language: ['c', 'cpp'])
++    add_project_arguments('-DWINVER=_WIN32_WINNT_WINXP', '-D_WIN32_WINNT=_WIN32_WINNT_WINXP', language: ['c', 'cpp'])
+   endif
+ endif
+ 

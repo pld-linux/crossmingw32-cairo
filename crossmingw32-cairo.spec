@@ -1,14 +1,14 @@
-# TODO: dwrite=enabled (BR: libd2d1, libdwrite, d2d1.h, dwrite.h
+# TODO: dwrite=enabled (BR: libd2d1, libdwrite, d2d1.h, dwrite.h)
 Summary:	Cairo - multi-platform 2D graphics library - cross MinGW32 version
 Summary(pl.UTF-8):	Cairo - wieloplatformowa biblioteka graficzna 2D - skrośna wersja MinGW32
 %define		realname   cairo
 Name:		crossmingw32-%{realname}
-Version:	1.18.2
+Version:	1.18.4
 Release:	1
 License:	LGPL v2.1 or MPL v1.1
 Group:		Development/Libraries
 Source0:	https://www.cairographics.org/releases/%{realname}-%{version}.tar.xz
-# Source0-md5:	5ad67c707edd0003f1b91c8bbc0005c1
+# Source0-md5:	db575fb41bbda127e0147e401f36f8ac
 Patch0:		cairo-mingw32.patch
 URL:		https://www.cairographics.org/
 BuildRequires:	crossmingw32-fontconfig >= 2.13.0
@@ -16,15 +16,16 @@ BuildRequires:	crossmingw32-freetype >= 2.13.0
 BuildRequires:	crossmingw32-gcc >= 1:4.7
 BuildRequires:	crossmingw32-glib2 >= 2.14
 BuildRequires:	crossmingw32-libpng >= 1.4.0
-BuildRequires:	crossmingw32-pixman >= 0.40.0
+BuildRequires:	crossmingw32-pixman >= 0.42.3
 BuildRequires:	crossmingw32-zlib
-BuildRequires:	meson >= 0.59.0
+BuildRequires:	meson >= 1.3.0
 BuildRequires:	ninja >= 1.5
 BuildRequires:	pkgconfig >= 1:0.18
+BuildRequires:	rpmbuild(macros) >= 2.042
 Requires:	crossmingw32-fontconfig >= 2.13.0
 Requires:	crossmingw32-freetype >= 2.13.0
 Requires:	crossmingw32-libpng >= 1.4.0
-Requires:	crossmingw32-pixman >= 0.40.0
+Requires:	crossmingw32-pixman >= 0.42.3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		no_install_post_strip	1
@@ -152,7 +153,7 @@ Biblioteka DLL Cairo GObject dla Windows.
 
 %prep
 %setup -q -n %{realname}-%{version}
-%patch0 -p1
+%patch -P0 -p1
 
 cat > meson-cross.txt <<'EOF'
 [host_machine]
@@ -165,7 +166,7 @@ c = '%{target}-gcc'
 cpp = '%{target}-g++'
 ar = '%{target}-ar'
 windres = '%{target}-windres'
-pkgconfig = 'pkg-config'
+pkg-config = 'pkg-config'
 [built-in options]
 %ifarch %{ix86}
 c_args = ['%(echo %{rpmcflags} | sed -e "s/ \+/ /g;s/ /', '/g")']
@@ -177,25 +178,29 @@ EOF
 
 %build
 export PKG_CONFIG_LIBDIR=%{_prefix}/lib/pkgconfig
-%meson build \
+%meson \
 	--cross-file meson-cross.txt \
 	-Ddwrite=disabled \
 	-Dfontconfig=enabled \
 	-Dfreetype=enabled \
+	-Dglib=enabled \
+	-Dlzo=disabled \
 	-Dpng=enabled \
+	-Dquartz=disabled \
 	-Dspectre=disabled \
+	-Dsymbol-lookup=disabled \
 	-Dtee=enabled \
 	-Dtests=disabled \
 	-Dxcb=disabled \
 	-Dxlib=disabled \
 	-Dzlib=enabled
 
-%ninja_build -C build
+%meson_build
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%ninja_install -C build
+%meson_install
 
 install -d $RPM_BUILD_ROOT%{_dlldir}
 %{__mv} $RPM_BUILD_ROOT%{_prefix}/bin/*.dll $RPM_BUILD_ROOT%{_dlldir}
