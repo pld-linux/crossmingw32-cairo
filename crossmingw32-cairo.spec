@@ -4,7 +4,7 @@ Summary(pl.UTF-8):	Cairo - wieloplatformowa biblioteka graficzna 2D - skrośna w
 %define		realname   cairo
 Name:		crossmingw32-%{realname}
 Version:	1.18.4
-Release:	1
+Release:	2
 License:	LGPL v2.1 or MPL v1.1
 Group:		Development/Libraries
 Source0:	https://www.cairographics.org/releases/%{realname}-%{version}.tar.xz
@@ -38,6 +38,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_prefix			%{_sysprefix}/%{target}
 %define		_libdir			%{_prefix}/lib
 %define		_pkgconfigdir		%{_prefix}/lib/pkgconfig
+%define		_docdir			%{_sysprefix}/share/doc
 %define		_dlldir			/usr/share/wine/windows/system
 %define		__cc			%{target}-gcc
 %define		__cxx			%{target}-g++
